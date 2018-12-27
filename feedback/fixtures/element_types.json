@@ -1,0 +1,24 @@
+[
+{
+    "model": "feedback.elementtype",
+    "pk": 1,
+    "fields": {
+        "name": "Satisfaction scale",
+        "key": "SCALE",
+        "options": {
+            "min": 1,
+            "min_label": "Poor",
+            "max": 5,
+            "max_label": "Excellent"
+        }
+    }
+},
+{
+    "model": "feedback.elementtype",
+    "pk": 2,
+    "fields": {
+        "name": "Large text",
+        "key": "TEXTAREA"
+    }
+}
+]
