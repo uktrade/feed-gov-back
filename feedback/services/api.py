@@ -4,6 +4,7 @@ from feedback.models import (
     FeedbackForm,
     FormElement,
     FeedbackForm,
+    FeedbackData,
 )
 from feedback.exceptions import InvalidElementOption
 from .exceptions import (
@@ -95,3 +96,22 @@ class FeedbackFormElementApi(APIView):
                 raise InvalidRequestParams(str(exc))
 
 
+class FeedbackApi(APIView):
+    """
+    Return feedback data for a form, or post new feedback data to it.
+
+    ## GET
+        feedback/<uuid:form_id>/
+
+    ## POST
+        feedback/<uuid:form_id>/
+    """
+    def get(self, request, form_id, *args, **kwargs):
+        try:
+            form = FeedbackForm.objects.get(id=form_id)
+            data = FeedbackData.objects.filter(form=form)
+        except FeedbackForm.DoesNotExist:
+            raise NotFoundApiExceptions('Form not found')
+        return ResponseSuccess({
+
+            })
