@@ -57,16 +57,16 @@ class FormElement(BaseFeedbackModel):
     an optional options to specify custom options for the element.
     Elements are ordered in a form via the order field
     """
-    form = models.ForeignField(FeedbackForm, null=False, blank=False)
-    element_type = models.ForeignField(ElementType, null=False, blank=False)
+    form = models.ForeignKey(FeedbackForm, null=False, blank=False, on_delete=models.PROTECT)
+    element_type = models.ForeignKey(ElementType, null=False, blank=False, on_delete=models.PROTECT)
     name = models.CharField(max_length=250, null=False, blank=False)
     label = models.CharField(max_length=1000, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     options = fields.JSONField(default=dict)
-    order = models.SmallInteger(default=0)
+    order = models.SmallIntegerField(default=0)
 
     def __str__(self):
-        return f'{element_type}: {name}'
+        return f'{self.element_type}: {self.name}'
 
     def _to_dict(self):
         return {
@@ -79,7 +79,7 @@ class FormElement(BaseFeedbackModel):
         Validate the all given option keys are actually valid options based on the element
         type. Raise InvalidElementOption exception if not.
         """
-        for key in option:
+        for key in options:
             if key not in self.element_type.options:
                 raise InvalidElementOption(f'{key} is not a valid option for {self.element_type}')
         return True
@@ -102,12 +102,12 @@ class FeedbackData(BaseFeedbackModel):
     Data is kept as a JSON field so it can be a simple value (string or boolean) or a more
     complex one
     """
-    element = models.ForeignField(FormElement, null=False, blank=False)
+    element = models.ForeignKey(FormElement, null=False, blank=False, on_delete=models.PROTECT)
     value = fields.JSONField(null=True, blank=True)
-    created_by = ForeignField(settings.getattr('FEEDBACK_USER_MODEL'), null=True, blank=True)
+    created_by = models.ForeignKey(getattr(settings, 'FEEDBACK_USER_MODEL'), null=True, blank=True, on_delete=models.PROTECT)
 
     def __str__(self):
-        _str = f'{self.element.form} -> {self.element} -> {value}'
+        _str = f'{self.element.form} -> {self.element} -> {self.value}'
         if self.created_by:
             _str = f'{_str} ({self.created_by})'
         return _str
