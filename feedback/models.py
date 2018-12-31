@@ -62,7 +62,7 @@ class FormElement(BaseFeedbackModel):
     name = models.CharField(max_length=250, null=False, blank=False)
     label = models.CharField(max_length=1000, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    options = fields.JSONField(default=dict)
+    options = fields.JSONField(default=dict, blank=True)
     order = models.SmallIntegerField(default=0)
 
     def __str__(self):
