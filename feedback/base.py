@@ -22,9 +22,9 @@ class BaseFeedbackModel(models.Model):
         _dict = {
             'id': str(self.id),
             'created_at': self.created_at.strftime(
-                settings.getattr('API_DATETIME_FORMAT', '%Y-%m-%dT%H:%M:%S%z')),
+                getattr(settings, 'API_DATETIME_FORMAT', '%Y-%m-%dT%H:%M:%S%z')),
             'last_modified': self.created_at.strftime(
-                settings.getattr('API_DATETIME_FORMAT', '%Y-%m-%dT%H:%M:%S%z'))
+                getattr(settings, 'API_DATETIME_FORMAT', '%Y-%m-%dT%H:%M:%S%z'))
         }
         if hasattr(self, '_to_dict'):
             _dict.update(self._to_dict())

@@ -71,6 +71,10 @@ class FormElement(BaseFeedbackModel):
     def _to_dict(self):
         return {
             'type': self.element_type.name,
+            'label': self.label,
+            'description': self.description,
+            'order': self.order,
+            'options': self.options or self.element_type.options,
 
         }
 
