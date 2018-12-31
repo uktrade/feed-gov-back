@@ -6,15 +6,21 @@ from .base import BaseFeedbackModel
 from .exceptions import InvalidElementOption
 
 
+class FeedbackFormManager(models.Manager):
+    def by_key(self, key):
+        return self.get(key=key)
+
 class FeedbackForm(BaseFeedbackModel):
     """
     The Form is the top level root in a feedback process. It is a collection
     of fields and content to retrieve a full feedback form.
-    Forms can be identified by their unique id or unique humanised key
+    Forms can be identified by their unique id or an optional unique humanised key
     """
     name = models.CharField(max_length=250, null=False, blank=False)
     key = models.CharField(max_length=32, null=True, blank=True, unique=True)
     description = models.TextField(null=True, blank=True)
+
+    objects = FeedbackFormManager()
 
     def __str__(self):
         if self.key:
@@ -27,9 +33,27 @@ class FeedbackForm(BaseFeedbackModel):
             'key': self.key,
             'description': self.description,
             'elements': [
-                element.to_dict() for element in self.formelement_set.all().order_by('order')
+                element.to_dict() for element in self.elements
             ]
         }
+
+    def add_element(self, element_type, name, label=None, description=None, options=None):
+        element = FormElement(
+            form=self,
+            element_type=element_type,
+            name=name,
+            label=label,
+            description=description
+        )
+        if options:
+            element.set_options(options)
+        element.order = self.num_of_elements + 1
+        element.save()
+        return element
+
+    @property
+    def elements(self):
+        return self.formelement_set.all().order_by('order')
 
     @property
     def num_of_elements(self):
