@@ -19,4 +19,5 @@ test:
 		$(VENV_PATH)/python ./runtests.py feedbackdb uktrade uktrade
 
 sdist:
-		rm dist/*.tar.gz; python setup.py sdist
+		rm dist/*.tar.gz;
+		python setup.py sdist;

@@ -64,7 +64,10 @@ class ElementType(models.Model):
     """
     The type of input fields available.
     A field type can specify a set of options with defaults which will be used
-    in the rendering of the element
+    in the rendering of the element.
+
+    One convention is followed as far as element type options are concerned:
+        - A feedback element is considered a "range" (or scale) element if it has the min/max options.
     """
     name = models.CharField(max_length=250, null=False, blank=False)
     key = models.CharField(max_length=30, null=False, blank=False)
@@ -98,7 +101,7 @@ class FormElement(BaseFeedbackModel):
             'label': self.label,
             'description': self.description,
             'order': self.order,
-            'options': self.options or self.element_type.options,
+            'options': self.get_options(),
 
         }
 
@@ -112,6 +115,9 @@ class FormElement(BaseFeedbackModel):
                 raise InvalidElementOption(f'{key} is not a valid option for {self.element_type}')
         return True
 
+    def get_options(self):
+        return self.options or self.element_type.options
+
     def set_options(self, options):
         """
         For a given set of element options, validate them and overlay any on top of of the
@@ -122,6 +128,17 @@ class FormElement(BaseFeedbackModel):
         for key in options:
             _options[key] = type(_options[key])(options[key])
         self.options = _options
+
+    @property
+    def is_range(self):
+        options = self.get_options()
+        print("OPTIONS", options)
+        return 'min' in options and 'max' in options
+
+    @property
+    def as_range(self):
+        options = self.get_options()
+        return range(options['min'], options['max'] + 1)
 
 
 class FeedbackData(BaseFeedbackModel):

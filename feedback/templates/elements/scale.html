@@ -1,0 +1,8 @@
+<div style="clear: both;">
+    {{element.name}}<br/>
+    {{element.label}}<br/>
+    {{element.description}}<br/>
+    {% for el in range %}
+        <input type="radio" name="{{name}}" value="{{el}}"/> {{el}}<br/>
+    {% endfor %}
+</div>
