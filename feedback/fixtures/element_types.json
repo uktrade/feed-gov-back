@@ -20,5 +20,13 @@
         "name": "Large text",
         "key": "TEXTAREA"
     }
+},
+{
+    "model": "feedback.elementtype",
+    "pk": 3,
+    "fields": {
+        "name": "Text input",
+        "key": "TEXT"
+    }
 }
 ]

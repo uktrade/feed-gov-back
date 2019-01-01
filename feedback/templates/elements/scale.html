@@ -1,8 +1,6 @@
-<div style="clear: both;">
-    {{element.name}}<br/>
-    {{element.label}}<br/>
-    {{element.description}}<br/>
+{% extends "./base.html" %}
+{% block element_body %}
     {% for el in range %}
-        <input type="radio" name="{{name}}" value="{{el}}"/> {{el}}<br/>
+        <input type="radio" name="{{element.id}}" value="{{el}}"/> {{el}}<br/>
     {% endfor %}
-</div>
+{% endblock %}

@@ -1,11 +1,11 @@
 """
-Template tag to display a two letter badge to denote a case type
+Template tag to a feedback form element based on it's type.
 Usage:
-    {{ case_type_badge case.type }}
+    {% feedback_element element %}
 
 """
 from django.utils.safestring import mark_safe
-from django.template import Template, loader
+from django.template import loader
 from . import register
 
 

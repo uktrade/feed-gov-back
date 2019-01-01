@@ -28,3 +28,15 @@ Quick start
 
     ./manage.py migrate
     ./manage.py loaddata path/to/fedback/fixtures/*.json
+
+
+How it works
+-------------
+A FeedbackForm contains one or more FormElement models of different ElementType.
+The data is collected for each submission into FeedbackData.
+
+A REST Api is exposed to allow manipulating the models externally, which is useful when this is deployed
+into a backend service.
+
+In addition, a view to accept form submissions is provided, as well as template tags to render a complete form
+or part of it.

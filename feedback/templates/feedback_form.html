@@ -1,0 +1,11 @@
+{% load feedback_element %}
+<form action="" method="post">
+    {% block form_head %}
+    {% endblock %}
+    {% for element in form.elements %}
+        {% feedback_element element %}
+    {% endfor %}
+    <button type="submit">Submit</button>
+    {% block form_footer %}
+    {% endblock %}
+</form>

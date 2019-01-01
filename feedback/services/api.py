@@ -115,3 +115,11 @@ class FeedbackApi(APIView):
         return ResponseSuccess({
 
             })
+
+    def post(self, request, form_id, *args, **kwargs):
+        for key in request.data:
+            try:
+                element = FormElement.objects.get(id=key)
+
+            except FormElement.DoesNotExist:
+                pass
