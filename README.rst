@@ -64,7 +64,7 @@ New ``Placement`` records will be created.
 Settings
 --------
 
-The following settings are expected in your Django application::
+The following settings are expected in your Django application
 
 ===================== ================================================
 Setting               Description
