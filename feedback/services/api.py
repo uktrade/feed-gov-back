@@ -15,6 +15,7 @@ from .exceptions import (
     InvalidRequestParams,
 )
 from .base import ResponseSuccess
+from ..utils import get_form
 
 
 class FeedbackFormApi(APIView):
@@ -146,20 +147,7 @@ class FeedbackApi(APIView):
     def post(self, request, form_id, collection_id=None, placement_id=None, *args, **kwargs):
         placement_id = placement_id or request.data.get('placement_id')
         form = FeedbackForm.objects.get(id=form_id)
-        collection = FeedbackCollection.objects.get_collection(
-            form=form,
-            collection_id=collection_id,
-            placement_id=placement_id,
-            created_by=request.user)
-        for element in form.elmeents:
-            if str(element.id) in request.data:
-                form_data, _ = FeedbackData.objects.get_or_create(
-                    collection=collection,
-                    element=element
-                )
-                form_data.value = request.data[str(element.id)]
-                form_data.save()
-        collection.refresh_from_db()
+        collection = form.collect(request.data, collection_id=collection_id, placement_id=placement_id, user=request.user)
         return ResponseSuccess({
             'result': collection.to_dict()
         }, http_status=status.HTTP_201_CREATED)

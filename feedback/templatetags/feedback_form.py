@@ -12,11 +12,12 @@ from ..utils import is_uuid
 
 
 @register.simple_tag
-def feedback_form(key):
+def feedback_form(request, key, placement_id=None):
     kwarg_key = 'id' if is_uuid(key) else 'key'
     form = FeedbackForm.objects.get(**{kwarg_key: key})
     context = {
-        'form': form
+        'form': form,
+        'placement_id': placement_id,
     }
     template = loader.get_template(f'feedback_form.html')
-    return mark_safe(template.render(context))
+    return mark_safe(template.render(context, request))

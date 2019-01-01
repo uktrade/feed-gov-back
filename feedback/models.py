@@ -103,6 +103,28 @@ class FeedbackForm(BaseFeedbackModel):
     def collcetions(self):
         return self.feedbackcollection_set.all().order_by('-created_at')
 
+    def collect(self, data, collection_id=None, placement_id=None, user=None):
+        """
+        Perform a data collection for this form using a data dict
+        """
+        if user and user.is_anonymous:
+            user = None
+        collection = FeedbackCollection.objects.get_collection(
+            form=self,
+            collection_id=collection_id,
+            placement_id=placement_id,
+            user=user)
+        for element in self.elements:
+            if str(element.id) in data:
+                form_data, _ = FeedbackData.objects.get_or_create(
+                    collection=collection,
+                    element=element
+                )
+                form_data.value = data[str(element.id)]
+                form_data.save()
+        collection.refresh_from_db()
+        return collection
+
 
 class ElementType(models.Model):
     """
@@ -176,7 +198,6 @@ class FormElement(BaseFeedbackModel):
     @property
     def is_range(self):
         options = self.get_options()
-        print("OPTIONS", options)
         return 'min' in options and 'max' in options
 
     @property
@@ -208,6 +229,8 @@ class FeedbackCollection(BaseFeedbackModel):
     placement = models.ForeignKey(Placement, null=False, blank=False, on_delete=models.PROTECT)
     created_by = models.ForeignKey(USER_MODEL_PATH, null=True, blank=True, on_delete=models.PROTECT)
 
+    objects = FeedbackCollectionManager()
+
     def __str__(self):
         return f'{self.form} @ {self.placement} [{self.created_at}]'
 
@@ -237,8 +260,6 @@ class FeedbackData(BaseFeedbackModel):
 
     def __str__(self):
         _str = f'{self.element.form} -> {self.element} -> {self.value}'
-        if self.created_by:
-            _str = f'{_str} ({self.created_by})'
         return _str
 
     def _to_dict(self):

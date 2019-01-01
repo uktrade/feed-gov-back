@@ -1,5 +1,6 @@
 {% load feedback_element %}
-<form action="" method="post">
+<form action="/feedback/submit/{{form.id}}/{% if placement_id %}placement/{{placement_id}}/{% endif %}" method="post">
+    {% csrf_token %}
     {% block form_head %}
     {% endblock %}
     {% for element in form.elements %}

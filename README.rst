@@ -68,4 +68,11 @@ Usage
 To include a complete feedback form::
 
     {% load feedback_form %}
-    {% feedback_form FORM_KEY_OR_ID %}
+    {% feedback_form request FORM_KEY_OR_ID %}
+
+or to include a specific placement::
+
+    {% feedback_form request FORM_KEY_OR_ID PLACEMENT_ID %}
+
+
+Note that the feedback_form tag requires the request to pass through it in order toe generate the csrf_token.
