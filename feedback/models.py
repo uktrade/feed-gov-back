@@ -120,7 +120,7 @@ class FeedbackForm(BaseFeedbackModel):
                     collection=collection,
                     element=element
                 )
-                form_data.value = data[str(element.id)]
+                form_data.value = element.cast_as_type(data[str(element.id)])
                 form_data.save()
         collection.refresh_from_db()
         return collection
@@ -182,7 +182,10 @@ class FormElement(BaseFeedbackModel):
         return True
 
     def get_options(self):
-        return self.options or self.element_type.options
+        _options = self.element_type.options
+        if isinstance(_options, dict) and self.options:
+            _options.update(self.options)
+        return _options
 
     def set_options(self, options):
         """
@@ -195,8 +198,23 @@ class FormElement(BaseFeedbackModel):
             _options[key] = type(_options[key])(options[key])
         self.options = _options
 
+    def cast_as_type(self, value):
+        """
+        If the options dicate a data type of int or str, ensure the value is of tha type
+        """
+        types = {
+            'int': int,
+            'str': str,
+        }
+        if self.options.get('type') in types:
+            return types[self.options['type']](value)
+        return value
+
     @property
     def is_range(self):
+        """
+        An element is a range if it contains a min/max options
+        """
         options = self.get_options()
         return 'min' in options and 'max' in options
 
@@ -246,6 +264,7 @@ class FeedbackCollection(BaseFeedbackModel):
                 item.to_dict() for item in self.data
             ]
         }
+        return _dict
 
 
 class FeedbackData(BaseFeedbackModel):

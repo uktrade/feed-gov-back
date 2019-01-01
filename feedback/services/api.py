@@ -1,13 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from feedback.models import (
-    Placement,
     FeedbackForm,
     FormElement,
     FeedbackCollection,
-    FeedbackForm,
-    FeedbackData,
-    DEFAULT_PLACEMENT_KEY,
 )
 from feedback.exceptions import InvalidElementOption
 from .exceptions import (
@@ -63,7 +59,7 @@ class FeedbackFormApi(APIView):
 
 class FeedbackFormElementApi(APIView):
     """
-
+    Get or create form elements
     """
     def get(self, request, form_id, element_id=None, *args, **kwargs):
         try:
@@ -146,7 +142,7 @@ class FeedbackApi(APIView):
 
     def post(self, request, form_id, collection_id=None, placement_id=None, *args, **kwargs):
         placement_id = placement_id or request.data.get('placement_id')
-        form = FeedbackForm.objects.get(id=form_id)
+        form = get_form(form_id)
         collection = form.collect(request.data, collection_id=collection_id, placement_id=placement_id, user=request.user)
         return ResponseSuccess({
             'result': collection.to_dict()
