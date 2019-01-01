@@ -24,6 +24,10 @@ Quick start
 
     path('feedback/', include('feedback.services.urls'))
 
+    or if not using the Api:
+
+    path('feedback/', include('feedback.urls'))
+
 4. Run migrations and load fixtures::
 
     ./manage.py migrate
@@ -50,8 +54,11 @@ Forms can be built via the Api, Models or simply created via the Django admin or
 
 Data collection
 ---------------
-Data is collected into the `FeedbackData` model. As feedback forms can be used in different parts of an application,
-the model expects a `Placement` to tell it which part of the application or website this form relates to.
+Data is collected into the ``FeedbackData`` model, grouped into ``FeedbackCollection`` entries.
+As feedback forms can be used in different parts of an application, the model expects a ``Placement`` to tell
+it which part of the application or website this form relates to. If a placement is not provided explicitly,
+a default one will be used. Placement ids can also be provided in runtime by simply providing it as a string.
+New ``Placement`` records will be created.
 
 
 Settings
@@ -59,8 +66,12 @@ Settings
 
 The following settings are expected in your Django application::
 
-    FEEDBACK_USER_MODEL A path to the User model. Defaults to `auth.User`
+    ===================== ================================================
+    Setting               Description
+    ===================== ================================================
+    FEEDBACK_USER_MODEL   A path to the User model. Defaults to `auth.User`
     DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to `DEFAULT`
+    ===================== ================================================
 
 Usage
 -----
