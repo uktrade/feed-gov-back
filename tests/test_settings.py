@@ -21,3 +21,5 @@ DATABASES = {
 }
 
 FEEDBACK_USER_MODEL = 'auth.User'
+
+ROOT_URLCONF = 'feedback.services.urls'

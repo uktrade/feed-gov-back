@@ -6,7 +6,8 @@ from .api import (
 )
 
 urlpatterns = [
-    path('', FeedbackFormApi.as_view(), name='feedback-form'),
+    path('', FeedbackFormApi.as_view(), name='feedback-forms'),
+    path('<uuid:form_id>/', FeedbackFormApi.as_view(), name='feedback-form'),
     path('element/', FeedbackFormElementApi.as_view(), name='feedback-element'),
 
 ]

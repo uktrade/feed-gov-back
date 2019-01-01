@@ -1,4 +1,3 @@
-import uuid
 from django.db import models
 from django.contrib.postgres import fields
 from django.conf import settings
@@ -6,9 +5,50 @@ from .base import BaseFeedbackModel
 from .exceptions import InvalidElementOption
 
 
+USER_MODEL_PATH = getattr(settings, 'FEEDBACK_USER_MODEL', 'auth.User')
+DEFAULT_PLACEMENT_KEY = getattr(settings, 'DEFAULT_PLACEMENT_KEY', 'DEFAULT')
+
+
+class PlacementManager(models.Manager):
+    def get_placement(self, key=None):
+        """
+        Always return a placement. If key is not provided it will default to the key defined in DEFAULT_PLACEMENT_KEY setting.
+        """
+        key = key or DEFAULT_PLACEMENT_KEY
+        placement, _ = self.get_or_create(id=key)
+        return placement
+
+
+class Placement(BaseFeedbackModel):
+    """
+    A placement is a unique location a form can be placed at on a web resource. Placements are used to
+    group forms submitted from the same location.
+    It is possible to predefine all placements or allow generating those on the fly. Either way,
+    a placement must be used when collecting data for a form. If one is not provided,
+    a default one will be used (if using the API)
+    A placement can be identified via it's unique user defined id. A more friendly descriptive name and url are optional.
+    """
+    id = models.CharField(max_length=64, null=False, blank=False, primary_key=True)
+    name = models.CharField(max_length=250, null=True, blank=True)
+    url = models.URLField(null=True, blank=True)
+
+    objects = PlacementManager()
+
+    def __str__(self):
+        return f'{self.id} [{self.name}]'
+
+    def _to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'url': self.url
+        }
+
+
 class FeedbackFormManager(models.Manager):
     def by_key(self, key):
         return self.get(key=key)
+
 
 class FeedbackForm(BaseFeedbackModel):
     """
@@ -58,6 +98,10 @@ class FeedbackForm(BaseFeedbackModel):
     @property
     def num_of_elements(self):
         return self.formelement_set.all().count()
+
+    @property
+    def collcetions(self):
+        return self.feedbackcollection_set.all().order_by('-created_at')
 
 
 class ElementType(models.Model):
@@ -141,18 +185,65 @@ class FormElement(BaseFeedbackModel):
         return range(options['min'], options['max'] + 1)
 
 
+class FeedbackCollectionManager(models.Manager):
+    def get_collection(self, form, collection_id=None, placement_id=None, user=None):
+        """
+        Get an existing collection (to append to it in case of a wizard form scenario)
+        or create a new one. If placement is not provided, the default will be used.
+        """
+        if collection_id:
+            return self.get(id=collection_id, form=form)
+        return self.create(
+            form=form,
+            placement=Placement.objects.get_placement(key=placement_id),
+            created_by=user
+        )
+
+class FeedbackCollection(BaseFeedbackModel):
+    """
+    A single collection of a feedback form, used to group all collected element data.
+    A collection is tied to a placement and an optional user identifier.
+    """
+    form = models.ForeignKey(FeedbackForm, null=False, blank=False, on_delete=models.PROTECT)
+    placement = models.ForeignKey(Placement, null=False, blank=False, on_delete=models.PROTECT)
+    created_by = models.ForeignKey(USER_MODEL_PATH, null=True, blank=True, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'{self.form} @ {self.placement} [{self.created_at}]'
+
+    @property
+    def data(self):
+        return self.feedbackdata_set.all().order_by('element__order')
+
+    def _to_dict(self):
+        _dict = {
+            'placement': self.placement.to_dict(),
+            'created_by': str(self.created_by.pk) if self.created_by else None,
+            'data': [
+                item.to_dict() for item in self.data
+            ]
+        }
+
+
 class FeedbackData(BaseFeedbackModel):
     """
     Data captured for an element in a form, by a user (optional).
     Data is kept as a JSON field so it can be a simple value (string or boolean) or a more
     complex one
     """
+    collection = models.ForeignKey(FeedbackCollection, null=False, blank=False, on_delete=models.PROTECT)
     element = models.ForeignKey(FormElement, null=False, blank=False, on_delete=models.PROTECT)
     value = fields.JSONField(null=True, blank=True)
-    created_by = models.ForeignKey(getattr(settings, 'FEEDBACK_USER_MODEL'), null=True, blank=True, on_delete=models.PROTECT)
 
     def __str__(self):
         _str = f'{self.element.form} -> {self.element} -> {self.value}'
         if self.created_by:
             _str = f'{_str} ({self.created_by})'
         return _str
+
+    def _to_dict(self):
+        return {
+            'id': str(self.id),
+            'element': self.element.to_dict(),
+            'value': self.value,
+        }

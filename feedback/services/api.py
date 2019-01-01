@@ -1,10 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from feedback.models import (
+    Placement,
     FeedbackForm,
     FormElement,
+    FeedbackCollection,
     FeedbackForm,
     FeedbackData,
+    DEFAULT_PLACEMENT_KEY,
 )
 from feedback.exceptions import InvalidElementOption
 from .exceptions import (
@@ -15,6 +18,13 @@ from .base import ResponseSuccess
 
 
 class FeedbackFormApi(APIView):
+    """
+    Get or create feedback forms. Urls are shows relative to the base url.
+
+    ## GET
+        `/` Get all forms
+        `/<uuid:form_id>/` Get a single form
+    """
     def get(self, request, form_id=None, *args, **kwargs):
         order_by = request.query_params.get('order', 'created_at')
         if form_id:
@@ -51,6 +61,9 @@ class FeedbackFormApi(APIView):
 
 
 class FeedbackFormElementApi(APIView):
+    """
+
+    """
     def get(self, request, form_id, element_id=None, *args, **kwargs):
         try:
             form = FeedbackForm.objects.get(id=form_id)
@@ -98,28 +111,55 @@ class FeedbackFormElementApi(APIView):
 
 class FeedbackApi(APIView):
     """
-    Return feedback data for a form, or post new feedback data to it.
+    Return feedback collections for a form, data for a single collection, or post new feedback data to it.
+    Placement id can be provided in URL or as a query/form param
 
     ## GET
-        feedback/<uuid:form_id>/
+        feedback/<uuid:form_id>/  Get all collections for this form
+        feedback/<uuid:form_id>/collection/<uuid:collection_id>/  Get all data for a single collection
+        feedback/<uuid:form_id>/placement/<str:placement_id>/ Get all collections for a specific placment
 
     ## POST
         feedback/<uuid:form_id>/
+        feedback/<uuid:form_id>/placement/<str:placement_id>/
     """
-    def get(self, request, form_id, *args, **kwargs):
+    def get(self, request, form_id, collection_id=None, placement_id=None,  *args, **kwargs):
+        placement_id = placement_id or request.query_params.get('placement_id')
         try:
             form = FeedbackForm.objects.get(id=form_id)
-            data = FeedbackData.objects.filter(form=form)
+            if collection_id:
+                collection = FeedbackCollection.objects.get(id=collection_id)
+                return ResponseSuccess({
+                    'result': collection.to_dict()
+                })
+            else:
+                return ResponseSuccess({
+                    'results': [
+                        collection.to_dict() for collection in form.collections
+                    ]
+                })
         except FeedbackForm.DoesNotExist:
             raise NotFoundApiExceptions('Form not found')
+        except FeedbackCollection.DoesNotExist:
+            raise NotFoundApiExceptions('Collection not found')
+
+    def post(self, request, form_id, collection_id=None, placement_id=None, *args, **kwargs):
+        placement_id = placement_id or request.data.get('placement_id')
+        form = FeedbackForm.objects.get(id=form_id)
+        collection = FeedbackCollection.objects.get_collection(
+            form=form,
+            collection_id=collection_id,
+            placement_id=placement_id,
+            created_by=request.user)
+        for element in form.elmeents:
+            if str(element.id) in request.data:
+                form_data, _ = FeedbackData.objects.get_or_create(
+                    collection=collection,
+                    element=element
+                )
+                form_data.value = request.data[str(element.id)]
+                form_data.save()
+        collection.refresh_from_db()
         return ResponseSuccess({
-
-            })
-
-    def post(self, request, form_id, *args, **kwargs):
-        for key in request.data:
-            try:
-                element = FormElement.objects.get(id=key)
-
-            except FormElement.DoesNotExist:
-                pass
+            'result': collection.to_dict()
+        }, http_status=status.HTTP_201_CREATED)

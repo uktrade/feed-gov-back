@@ -35,8 +35,37 @@ How it works
 A FeedbackForm contains one or more FormElement models of different ElementType.
 The data is collected for each submission into FeedbackData.
 
+As a form can be placed in different parts of a web resource, Placement records can be created to
+group together form data submitted for different parts of the application. Placements do not have
+to be created upfront, and can be generated on the fly by providing a unique placement key with the form.
+
 A REST Api is exposed to allow manipulating the models externally, which is useful when this is deployed
 into a backend service.
 
 In addition, a view to accept form submissions is provided, as well as template tags to render a complete form
 or part of it.
+
+Forms can be built via the Api, Models or simply created via the Django admin or even fixtures.
+
+
+Data collection
+---------------
+Data is collected into the `FeedbackData` model. As feedback forms can be used in different parts of an application,
+the model expects a `Placement` to tell it which part of the application or website this form relates to.
+
+
+Settings
+--------
+
+The following settings are expected in your Django application::
+
+    FEEDBACK_USER_MODEL A path to the User model. Defaults to `auth.User`
+    DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to `DEFAULT`
+
+Usage
+-----
+
+To include a complete feedback form::
+
+    {% load feedback_form %}
+    {% feedback_form FORM_KEY_OR_ID %}
