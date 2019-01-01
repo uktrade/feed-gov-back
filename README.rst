@@ -66,12 +66,12 @@ Settings
 
 The following settings are expected in your Django application::
 
-    ===================== ================================================
-    Setting               Description
-    ===================== ================================================
-    FEEDBACK_USER_MODEL   A path to the User model. Defaults to `auth.User`
-    DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to `DEFAULT`
-    ===================== ================================================
+===================== ================================================
+Setting               Description
+===================== ================================================
+FEEDBACK_USER_MODEL   A path to the User model. Defaults to `auth.User`
+DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to `DEFAULT`
+===================== ================================================
 
 Usage
 -----
