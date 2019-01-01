@@ -13,7 +13,7 @@ Quick start
     pip install feed-gov-back
 
 
-2. Add `feedback` to your `INSTALLED_APPS` in your `settings`::
+2. Add `feedback` to your ``INSTALLED_APPS`` in your ``settings``::
 
     INSTALLED_APPS = [
         ...
@@ -36,10 +36,10 @@ Quick start
 
 How it works
 -------------
-A FeedbackForm contains one or more FormElement models of different ElementType.
+A ``FeedbackForm`` contains one or more FormElement models of different ElementType.
 The data is collected for each submission into FeedbackData.
 
-As a form can be placed in different parts of a web resource, Placement records can be created to
+As a form can be placed in different parts of a web resource, ``Placement`` records can be created to
 group together form data submitted for different parts of the application. Placements do not have
 to be created upfront, and can be generated on the fly by providing a unique placement key with the form.
 
@@ -69,7 +69,7 @@ The following settings are expected in your Django application
 ===================== ================================================
 Setting               Description
 ===================== ================================================
-FEEDBACK_USER_MODEL   A path to the User model. Defaults to `auth.User`
+FEEDBACK_USER_MODEL   A path to the User model. Defaults to ``auth.User``
 DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to `DEFAULT`
 ===================== ================================================
 
