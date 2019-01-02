@@ -1,0 +1,53 @@
+{% load feedback_form %}
+{% load feedback_element %}
+<html>
+    <head>
+        <title>Feedback form test site</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                font-size: 13px;
+            }
+            #feedback-form {
+                width: 60%;
+                margin: 8px;
+                padding: 8px;
+                border: 1px solid rgb(29, 29, 29);
+            }
+            .feedback-form-element {
+                border-bottom: 1px solid black;
+                padding: 5px;
+            }
+            .feedback-form-element-name {
+                font-size: 22px;
+            }
+            .feedback-form-element-label {
+                font-weight: 600;
+                font-size: 18px
+            }
+            .feedback-form-element-description {
+                font-style: italic;
+            }
+            .feedback-form-element input {
+                padding: 5px;
+            }
+            .feedback-form-button {
+                text-align: right;
+                padding: 10px;
+                margin: 5px;
+            }
+            .feedback-form-button button {
+                font-size: 16px;
+                color: black;
+                background: rgb(163, 160, 160);
+                border: 2px solid rgb(8, 8, 56);
+                padding: 9px;
+                margin: 9px;
+            }
+        </style>
+    </head>
+    <body>
+        <H1>Give us Feedback</H1>
+        {% feedback_form request 'FORM_ONE' 'MAIN_PAGE' %}
+    </body>
+</html>
