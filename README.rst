@@ -124,3 +124,22 @@ Subsequently, each element is div wrapped with a class ``feedback-form-element``
 The submit button is classed with ``feedback-form-button``.
 Within each element the following divs wrap the name, label and description fields:
 ``feedback-form-element-name``, ``feedback-form-element-label`` and ``feedback-form-element-description``
+
+
+Example App
+-----------
+The ``example`` directory contains a simple django project that utilises the feedback lib.
+It provides a docker contained postgres db which can be built to isolate the example.
+The make file allows for installation of the library based on a local sdist build.
+
+To run it, create a virtual environment and activate it.
+Then either provide your own database or ``docker-compose up postgres`` to use the docker one.
+Start with::
+
+    ./manage.py migrate
+    ./manage.py loaddata ../feeback/fixtures/*.json
+    ./manage.py createsuperuser
+    ./manage.py runserver
+
+You can create your form via ``http://localhost:8000/admin``
+and interact with the form via ``http://localhost:8000``.
