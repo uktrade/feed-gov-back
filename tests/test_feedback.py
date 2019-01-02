@@ -42,7 +42,7 @@ class FeedbackFormTest(FeedbackBaseTest):
         data_points = [3, 5, 2, 1, 2, 2, 3, 4, 5]
         actual_average = sum(data_points) / len(data_points)
         for data_point in data_points:
-            collection = self.form.collect({
+            self.form.collect({
                 str(elements[0].id): data_point,
                 str(elements[1].id): f'Note for {data_point}',
             }, placement_id='PLACEMENT')
@@ -53,7 +53,7 @@ class FeedbackFormTest(FeedbackBaseTest):
         elements = self.form.elements
         data_points = [3, 5, 2, 1, 2, 2, 3, 4, 5]
         for data_point in data_points:
-            collection = self.form.collect({
+            self.form.collect({
                 str(elements[0].id): data_point,
                 str(elements[1].id): f'Note for {data_point}',
             }, placement_id='PLACEMENT')
