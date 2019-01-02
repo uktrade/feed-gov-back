@@ -7,6 +7,7 @@ from .exceptions import InvalidElementOption
 
 USER_MODEL_PATH = getattr(settings, 'FEEDBACK_USER_MODEL', 'auth.User')
 DEFAULT_PLACEMENT_KEY = getattr(settings, 'DEFAULT_PLACEMENT_KEY', 'DEFAULT')
+ANONYMOUS_COLLECTION = getattr(settings, 'ANONYMOUS_COLLECTION', True)
 
 
 class PlacementManager(models.Manager):
@@ -107,7 +108,7 @@ class FeedbackForm(BaseFeedbackModel):
         """
         Perform a data collection for this form using a data dict
         """
-        if user and user.is_anonymous:
+        if ANONYMOUS_COLLECTION or (user and user.is_anonymous):
             user = None
         collection = FeedbackCollection.objects.get_collection(
             form=self,
@@ -124,6 +125,21 @@ class FeedbackForm(BaseFeedbackModel):
                 form_data.save()
         collection.refresh_from_db()
         return collection
+
+    def average_score(self, element):
+        """
+        Calculate an average score per placement for this form based on input
+        provided in the given element. If the element is not a range, returns None
+        """
+        if element.is_range:
+            elements = FeedbackData.objects.filter(
+                collection__form=self,
+                element=element,
+                value__isnull=False,
+            ).values_list('value', flat=True)
+            _int_values = [i for i in map(lambda x: int(x) if str(x).isdigit() else None, elements) if i is not None]
+            return sum(_int_values) / len(_int_values)
+        return None
 
 
 class ElementType(models.Model):
@@ -206,8 +222,9 @@ class FormElement(BaseFeedbackModel):
             'int': int,
             'str': str,
         }
-        if self.options.get('type') in types:
-            return types[self.options['type']](value)
+        options = self.get_options()
+        if options.get('type') in types:
+            return types[options['type']](value)
         return value
 
     @property

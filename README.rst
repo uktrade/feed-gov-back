@@ -34,10 +34,21 @@ Quick start
     ./manage.py loaddata path/to/fedback/fixtures/*.json
 
 
+Using Make
+----------
+The ``Makefile`` provides some handy commands::
+
+    make test  # run all tests
+    make sdist  # run python setup.py sdist to create a local installable
+
+
+
 How it works
 -------------
-A ``FeedbackForm`` contains one or more FormElement models of different ElementType.
-The data is collected for each submission into FeedbackData.
+A ``FeedbackForm`` contains one or more ``FormElement`` models of different ``ElementType``. These
+models represent the form and it's elements.
+The data is collected for each submission into ``FeedbackCollection`` which contain ``FeedbackData`` records for
+each form element submitted.
 
 As a form can be placed in different parts of a web resource, ``Placement`` records can be created to
 group together form data submitted for different parts of the application. Placements do not have
@@ -50,6 +61,22 @@ In addition, a view to accept form submissions is provided, as well as template 
 or part of it.
 
 Forms can be built via the Api, Models or simply created via the Django admin or even fixtures.
+
+
+Element Types
+-------------
+There are 3 element types defined: scale, large text area and text input. Scale elements can receive
+``options`` to override defaults. The options and defaults are::
+
+    {
+        "min": 1,
+        "max": 5,
+        "min_label": "Poor",
+        "max_label": "Excellent",
+        "type": int
+    }
+
+Fields can be rendered by the ``form_element`` template tag provided or manually in your templates.
 
 
 Data collection
@@ -70,7 +97,8 @@ The following settings are expected in your Django application
 Setting               Description
 ===================== ================================================
 FEEDBACK_USER_MODEL   A path to the User model. Defaults to ``auth.User``
-DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to `DEFAULT`
+DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to ``DEFAULT``
+ANONYMOUS_COLLECTION  A boolean to determine if to force anonymous collection or retain the user if available. Defaults to ``True``
 ===================== ================================================
 
 Usage
