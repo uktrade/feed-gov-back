@@ -3,7 +3,7 @@ Utility functions.
 """
 from uuid import UUID
 from functools import singledispatch
-from .models import FeedbackForm
+from .models import FeedbackForm, Placement
 
 
 @singledispatch
@@ -19,6 +19,15 @@ def _(form):  # noqa
 @get_form.register(str)
 def _(form):  # noqa
     return FeedbackForm.objects.by_key(form)
+
+
+@singledispatch
+def get_placement(placement):
+    return placement
+
+@get_placement.register(str)
+def _(placement):  # noqa
+    return Placement.objects.get(id=placement)
 
 
 def is_uuid(value):

@@ -126,14 +126,16 @@ class FeedbackForm(BaseFeedbackModel):
         collection.refresh_from_db()
         return collection
 
-    def average_score(self, element):
+    def average_score(self, placement, element):
         """
-        Calculate an average score per placement for this form based on input
-        provided in the given element. If the element is not a range, returns None
+        Calculate an average score for a placement for this form based on input
+        provided in the given element. If the element is not a range, returns None.
+        Note, this is currently done in code and not via the ORM/SQL.
         """
         if element.is_range:
             elements = FeedbackData.objects.filter(
                 collection__form=self,
+                collection__placement=placement,
                 element=element,
                 value__isnull=False,
             ).values_list('value', flat=True)
