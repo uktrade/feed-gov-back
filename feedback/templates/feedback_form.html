@@ -7,7 +7,9 @@
         {% for element in form.elements %}
             {% feedback_element element %}
         {% endfor %}
-        <button type="submit">Submit</button>
+        <div class="feedback-form-button">
+            <button type="submit">Submit</button>
+        </div>
         {% block form_footer %}
         {% endblock %}
     </form>

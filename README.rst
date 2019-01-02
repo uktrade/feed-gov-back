@@ -115,3 +115,12 @@ or to include a specific placement::
 
 
 Note that the feedback_form tag requires the request to pass through it in order toe generate the csrf_token.
+
+
+Styling
+-------
+The implemented template tags wrap the entire form in a div with id ``feedback-form``.
+Subsequently, each element is div wrapped with a class ``feedback-form-element``.
+The submit button is classed with ``feedback-form-button``.
+Within each element the following divs wrap the name, label and description fields:
+``feedback-form-element-name``, ``feedback-form-element-label`` and ``feedback-form-element-description``

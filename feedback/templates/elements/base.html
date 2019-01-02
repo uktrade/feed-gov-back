@@ -1,7 +1,9 @@
 <div style="clear: both;">
-    {{element.name}}<br/>
-    {{element.label}}<br/>
-    {{element.description}}<br/>
-    {% block element_body %}
-    {% endblock %}
+    <div class="feedback-form-element-name">{{element.name}}</div>
+    <div class="feedback-form-element-label">{{element.label}}</div>
+    <div class="feedback-form-element-description">{{element.description}}</div>
+    <div class="feedback-form-element">
+        {% block element_body %}
+        {% endblock %}
+    </div>
 </div>

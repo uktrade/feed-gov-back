@@ -1,6 +1,7 @@
 {% extends "./base.html" %}
 {% block element_body %}
     {% for el in range %}
-        <input type="radio" name="{{element.id}}" value="{{el}}"/> {{el}}<br/>
+        <input type="radio" id="{{forloop.counter}}-{{element.id}}" name="{{element.id}}" value="{{el}}"/>
+        <label for="{{forloop.counter}}-{{element.id}}">{{el}}</label>
     {% endfor %}
 {% endblock %}
