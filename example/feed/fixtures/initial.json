@@ -1,0 +1,86 @@
+[
+    {
+        "model": "feedback.placement",
+        "pk": "MAIN_PAGE",
+        "fields": {
+            "created_at": "2019-01-08T16:34:52.179Z",
+            "last_modified": "2019-01-08T16:34:52.179Z",
+            "name": "Main page",
+            "url": null
+        }
+    },
+    {
+        "model": "feedback.feedbackform",
+        "pk": "1c6219a6-8100-4143-a7c4-4df498f5291a",
+        "fields": {
+            "created_at": "2019-01-08T16:35:14.407Z",
+            "last_modified": "2019-01-08T16:35:14.407Z",
+            "name": "Test Form",
+            "key": "FROM_ONE",
+            "description": "Test Form"
+        }
+    },
+    {
+        "model": "feedback.elementtype",
+        "pk": 1,
+        "fields": {
+            "name": "Satisfaction scale",
+            "key": "SCALE",
+            "options": {
+                "max": 5,
+                "min": 1,
+                "type": "int",
+                "max_label": "Excellent",
+                "min_label": "Poor"
+            }
+        }
+    },
+    {
+        "model": "feedback.elementtype",
+        "pk": 2,
+        "fields": {
+            "name": "Large text",
+            "key": "TEXTAREA",
+            "options": {}
+        }
+    },
+    {
+        "model": "feedback.elementtype",
+        "pk": 3,
+        "fields": {
+            "name": "Text input",
+            "key": "TEXT",
+            "options": {}
+        }
+    },
+    {
+        "model": "feedback.formelement",
+        "pk": "aa9f2221-4cf1-4969-a98a-32085cfa43b9",
+        "fields": {
+            "created_at": "2019-01-08T16:36:26.356Z",
+            "last_modified": "2019-01-08T16:36:26.356Z",
+            "form": "1c6219a6-8100-4143-a7c4-4df498f5291a",
+            "element_type": 2,
+            "name": "Notes",
+            "label": "Express yourself",
+            "description": "Let us know how we're doing",
+            "options": {},
+            "order": 1
+        }
+    },
+    {
+        "model": "feedback.formelement",
+        "pk": "eed5c76e-01e4-4b13-8921-37651df51d20",
+        "fields": {
+            "created_at": "2019-01-08T16:36:06.983Z",
+            "last_modified": "2019-01-08T16:36:06.983Z",
+            "form": "1c6219a6-8100-4143-a7c4-4df498f5291a",
+            "element_type": 1,
+            "name": "Satisfaction",
+            "label": "How happy are you with the service?",
+            "description": "1 being least to 5 being most satisfied",
+            "options": {},
+            "order": 0
+        }
+    }
+    ]

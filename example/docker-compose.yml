@@ -1,8 +1,7 @@
 version: '2'
 
 services:
-    postgres:
-        container_name: feedback-db
+    feedbackdb:
         image: postgres:10.1
         restart: always
         volumes:

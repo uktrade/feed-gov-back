@@ -6,9 +6,28 @@ from functools import singledispatch
 from .models import FeedbackForm, Placement
 
 
+
+class dotdict(dict):
+    """
+    dot.access to dict attributes, even across nested dictionaries.
+    """
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+    def __getattr__(self, key):
+        if isinstance(self.get(key), dict):
+            return dotdict(self[key])
+        return self.get(key)
+
+
 @singledispatch
 def get_form(form):
     return form
+
+
+@get_form.register(dict)
+def _(form):  # noqa
+    return dotdict(form)
 
 
 @get_form.register(UUID)

@@ -20,6 +20,8 @@ from feed import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.main_view),
+    path('key', views.key_view),
+    path('dict', views.dict_view),
     path('api/feedback/', include('feedback.services.urls')),
     path('feedback/', include('feedback.urls')),
 ]

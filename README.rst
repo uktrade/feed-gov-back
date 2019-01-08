@@ -108,14 +108,24 @@ Usage
 To include a complete feedback form::
 
     {% load feedback_form %}
-    {% feedback_form request 'FORM_KEY_OR_ID' %}
+    {% feedback_form request 'FORM_REFERENCE' %}
 
 or to include a specific placement::
 
-    {% feedback_form request 'FORM_KEY_OR_ID' 'PLACEMENT_ID' %}
+    {% feedback_form request 'FORM_REFERENCE' 'PLACEMENT_ID' %}
 
 
 Note that the feedback_form tag requires the request to pass through it in order toe generate the csrf_token.
+
+
+*One important note* regarding FORM_REFERENCE shown in the tag example above: FORM_REFERENCE can be either a
+Feedback form unique key, it's unique UUID, the form Model instance itself, or a dict representation of the form.
+This allows for different usage pattern, depending on where this package is installed.
+For example, if Feedback forms are to be used across a service which is made of an API and a UI layer as separate
+applications, the API can install the package allowing for model creation but obviously not using the templatetags
+as it has no rendering responsibility. The UI however can install the package, disabling model management and only
+use the tags, by passing the dict returned from the API call. Note that in the case of passing a form model or dict
+the single quotes should be omitted. The example application demonstrates this concept.
 
 
 Styling
@@ -134,13 +144,14 @@ It provides a docker contained postgres db which can be built to isolate the exa
 The make file allows for installation of the library based on a local sdist build.
 
 To run it, create a virtual environment and activate it.
-Then either provide your own database or ``docker-compose up postgres`` to use the docker one.
+Then either provide your own database or ``docker-compose up`` to use the docker one.
 Start with::
 
     ./manage.py migrate
-    ./manage.py loaddata ../feeback/fixtures/*.json
-    ./manage.py createsuperuser
+    ./manage.py loaddata ./feed/fixtures/*.json
     ./manage.py runserver
 
-You can create your form via ``http://localhost:8000/admin``
-and interact with the form via ``http://localhost:8000``.
+- You can create your form via ``http://localhost:8000/admin`` (create a superuser to access the admin)
+- interact with the form via ``http://localhost:8000``
+- load the form using a key only: ``http://localhost:8000/key``
+- load the form using a dict representation of it: ``http://localhost:8000/dict``
