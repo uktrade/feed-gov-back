@@ -169,6 +169,13 @@ class ElementType(models.Model):
     def __str__(self):
         return self.name
 
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'key': self.key,
+            'options': self.options
+        }
+
 
 class FormElement(BaseFeedbackModel):
     """
@@ -193,8 +200,7 @@ class FormElement(BaseFeedbackModel):
 
     def _to_dict(self):
         return {
-            'type': self.element_type.name,
-            'type_key': self.element_type.key,
+            'element_type': self.element_type.to_dict(),
             'name': self.name,
             'label': self.label,
             'description': self.description,

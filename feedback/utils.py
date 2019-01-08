@@ -15,8 +15,11 @@ class dotdict(dict):
     __delattr__ = dict.__delitem__
 
     def __getattr__(self, key):
-        if isinstance(self.get(key), dict):
-            return dotdict(self[key])
+        _val = self.get(key)
+        if isinstance(_val, dict):
+            return dotdict(_val)
+        elif isinstance(_val, list):
+            return list(map(lambda x: dotdict(x) if isinstance(x, dict) else x, _val))
         return self.get(key)
 
 
@@ -43,6 +46,7 @@ def _(form):  # noqa
 @singledispatch
 def get_placement(placement):
     return placement
+
 
 @get_placement.register(str)
 def _(placement):  # noqa

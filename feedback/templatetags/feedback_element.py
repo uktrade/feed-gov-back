@@ -6,11 +6,14 @@ Usage:
 """
 from django.utils.safestring import mark_safe
 from django.template import loader
+from ..utils import dotdict
 from . import register
 
 
 @register.simple_tag
 def feedback_element(element):
+    if (isinstance(element, dict)):
+        element = dotdict(element)
     template_name = element.element_type.key.lower()
     context = {
         'name': element.name,
