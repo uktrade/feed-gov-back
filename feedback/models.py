@@ -8,7 +8,7 @@ from .exceptions import InvalidElementOption
 USER_MODEL_PATH = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 DEFAULT_PLACEMENT_KEY = getattr(settings, 'DEFAULT_PLACEMENT_KEY', 'DEFAULT')
 ANONYMOUS_COLLECTION = getattr(settings, 'ANONYMOUS_COLLECTION', True)
-
+MANAGED_MODELS = getattr(settings, 'MANAGED_FEEDBACK_MODELS', True)
 
 class PlacementManager(models.Manager):
     def get_placement(self, key=None):
@@ -34,6 +34,9 @@ class Placement(BaseFeedbackModel):
     url = models.URLField(null=True, blank=True)
 
     objects = PlacementManager()
+
+    class Meta:
+        managed = MANAGED_MODELS
 
     def __str__(self):
         return f'{self.id} [{self.name}]'
@@ -62,6 +65,9 @@ class FeedbackForm(BaseFeedbackModel):
     description = models.TextField(null=True, blank=True)
 
     objects = FeedbackFormManager()
+
+    class Meta:
+        managed = MANAGED_MODELS
 
     def __str__(self):
         if self.key:
@@ -157,6 +163,9 @@ class ElementType(models.Model):
     key = models.CharField(max_length=30, null=False, blank=False)
     options = fields.JSONField(default=dict)
 
+    class Meta:
+        managed = MANAGED_MODELS
+
     def __str__(self):
         return self.name
 
@@ -176,15 +185,22 @@ class FormElement(BaseFeedbackModel):
     options = fields.JSONField(default=dict, blank=True)
     order = models.SmallIntegerField(default=0)
 
+    class Meta:
+        managed = MANAGED_MODELS
+
     def __str__(self):
         return f'{self.element_type}: {self.name}'
 
     def _to_dict(self):
         return {
             'type': self.element_type.name,
+            'type_key': self.element_type.key,
+            'name': self.name,
             'label': self.label,
             'description': self.description,
             'order': self.order,
+            'is_range': self.is_range,
+            'as_range': list(self.as_range) if self.is_range else None,
             'options': self.get_options(),
 
         }
@@ -268,6 +284,9 @@ class FeedbackCollection(BaseFeedbackModel):
 
     objects = FeedbackCollectionManager()
 
+    class Meta:
+        managed = MANAGED_MODELS
+
     def __str__(self):
         return f'{self.form} @ {self.placement} [{self.created_at}]'
 
@@ -295,6 +314,9 @@ class FeedbackData(BaseFeedbackModel):
     collection = models.ForeignKey(FeedbackCollection, null=False, blank=False, on_delete=models.PROTECT)
     element = models.ForeignKey(FormElement, null=False, blank=False, on_delete=models.PROTECT)
     value = fields.JSONField(null=True, blank=True)
+
+    class Meta:
+        managed = MANAGED_MODELS
 
     def __str__(self):
         _str = f'{self.element.form} -> {self.element} -> {self.value}'

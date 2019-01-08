@@ -11,7 +11,7 @@ from .exceptions import (
     InvalidRequestParams,
 )
 from .base import ResponseSuccess
-from ..utils import get_form
+from ..utils import get_form, is_uuid
 
 
 class FeedbackFormApi(APIView):
@@ -21,12 +21,16 @@ class FeedbackFormApi(APIView):
     ## GET
         `/` Get all forms
         `/<uuid:form_id>/` Get a single form
+        `/<str:form_key/` Get a single form by key
     """
-    def get(self, request, form_id=None, *args, **kwargs):
+    def get(self, request, form_id=None, form_key=None, *args, **kwargs):
         order_by = request.query_params.get('order', 'created_at')
-        if form_id:
+        if form_id or form_key:
             try:
-                form = FeedbackForm.objects.get(id=form_id)
+                if form_id:
+                    form = FeedbackForm.objects.get(id=form_id)
+                elif form_key:
+                    form = FeedbackForm.objects.get(key=form_key)
                 return ResponseSuccess({
                     'result': form.to_dict()
                 })
