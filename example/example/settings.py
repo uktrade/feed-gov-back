@@ -124,4 +124,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-FEEDBACK_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'auth.User'

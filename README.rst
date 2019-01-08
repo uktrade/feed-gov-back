@@ -96,7 +96,7 @@ The following settings are expected in your Django application
 ===================== ================================================
 Setting               Description
 ===================== ================================================
-FEEDBACK_USER_MODEL   A path to the User model. Defaults to ``auth.User``
+AUTH_USER_MODEL       A path to the User model. Defaults to ``auth.User``
 DEFAULT_PLACEMENT_KEY A key to use as default placement if one is not provided. Defaults to ``DEFAULT``
 ANONYMOUS_COLLECTION  A boolean to determine if to force anonymous collection or retain the user if available. Defaults to ``True``
 ===================== ================================================

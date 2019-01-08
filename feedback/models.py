@@ -5,7 +5,7 @@ from .base import BaseFeedbackModel
 from .exceptions import InvalidElementOption
 
 
-USER_MODEL_PATH = getattr(settings, 'FEEDBACK_USER_MODEL', 'auth.User')
+USER_MODEL_PATH = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 DEFAULT_PLACEMENT_KEY = getattr(settings, 'DEFAULT_PLACEMENT_KEY', 'DEFAULT')
 ANONYMOUS_COLLECTION = getattr(settings, 'ANONYMOUS_COLLECTION', True)
 
