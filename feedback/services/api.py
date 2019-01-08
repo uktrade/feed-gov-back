@@ -21,7 +21,7 @@ class FeedbackFormApi(APIView):
     ## GET
         `/` Get all forms
         `/<uuid:form_id>/` Get a single form
-        `/<str:form_key/` Get a single form by key
+        `/key/<str:form_key/` Get a single form by key
     """
     def get(self, request, form_id=None, form_key=None, *args, **kwargs):
         order_by = request.query_params.get('order', 'created_at')
