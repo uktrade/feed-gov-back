@@ -16,7 +16,7 @@
             "created_at": "2019-01-08T16:35:14.407Z",
             "last_modified": "2019-01-08T16:35:14.407Z",
             "name": "Test Form",
-            "key": "FROM_ONE",
+            "key": "FORM_ONE",
             "description": "Test Form"
         }
     },
@@ -29,6 +29,13 @@
             "options": {
                 "max": 5,
                 "min": 1,
+                "labels": [
+                    "Very Dissatisfied",
+                    "Dissatisfied",
+                    "Neither satisfied or dissatisfied",
+                    "Satisfied",
+                    "Very satisfied"
+                ],
                 "type": "int",
                 "max_label": "Excellent",
                 "min_label": "Poor"
@@ -79,7 +86,16 @@
             "name": "Satisfaction",
             "label": "How happy are you with the service?",
             "description": "1 being least to 5 being most satisfied",
-            "options": {},
+            "options": {
+                "labels": [
+                    "Very Dissatisfied",
+                    "Dissatisfied",
+                    "Neither satisfied or dissatisfied",
+                    "Satisfied",
+                    "Very satisfied"
+                ],
+                "type": "str"
+            },
             "order": 0
         }
     }

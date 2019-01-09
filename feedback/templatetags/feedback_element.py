@@ -22,6 +22,9 @@ def feedback_element(element):
         'element': element,
     }
     if element.is_range:
-        context['range'] = element.as_range
+        try:
+            context['range'] = element.options.labels
+        except Exception:
+            context['range'] = element.as_range
     template = loader.get_template(f'elements/{template_name}.html')
     return mark_safe(template.render(context))

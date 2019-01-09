@@ -76,6 +76,13 @@ There are 3 element types defined: scale, large text area and text input. Scale 
         "type": int
     }
 
+    It is also possible to explicitly define the scale labels by providing a list of labels instead of the min/max
+    combination
+
+    ``labels: ["great", "indifferent", "poor"]``
+
+    In this case the "type" property of the options should be changed to ``str``
+
 Fields can be rendered by the ``form_element`` template tag provided or manually in your templates.
 
 

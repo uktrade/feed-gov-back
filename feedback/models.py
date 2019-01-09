@@ -107,7 +107,7 @@ class FeedbackForm(BaseFeedbackModel):
         return self.formelement_set.all().count()
 
     @property
-    def collcetions(self):
+    def collections(self):
         return self.feedbackcollection_set.all().order_by('-created_at')
 
     def collect(self, data, collection_id=None, placement_id=None, user=None):
@@ -208,7 +208,6 @@ class FormElement(BaseFeedbackModel):
             'is_range': self.is_range,
             'as_range': list(self.as_range) if self.is_range else None,
             'options': self.get_options(),
-
         }
 
     def validate_options(self, options):
@@ -257,11 +256,13 @@ class FormElement(BaseFeedbackModel):
         An element is a range if it contains a min/max options
         """
         options = self.get_options()
-        return 'min' in options and 'max' in options
+        return ('min' in options and 'max' in options) or bool(options.get('labels'))
 
     @property
     def as_range(self):
         options = self.get_options()
+        if options.get('labels'):
+            return options['labels']
         return range(options['min'], options['max'] + 1)
 
 
