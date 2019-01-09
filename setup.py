@@ -15,9 +15,9 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
-    description='A small framework for API enabled Feedback forms',
+    description='A small framework for API enabled customisable feedback forms',
     long_description=README,
-    url='https://gov.uk/',
+    url='https://github.com/uktrade/feed-gov-back',
     author=__author__,
     author_email=__email__,
     classifiers=[
