@@ -31,7 +31,7 @@ class Placement(BaseFeedbackModel):
     """
     id = models.CharField(max_length=64, null=False, blank=False, primary_key=True)
     name = models.CharField(max_length=250, null=True, blank=True)
-    url = models.URLField(null=True, blank=True)
+    url = models.CharField(max_length=500, null=True, blank=True)
 
     objects = PlacementManager()
 
