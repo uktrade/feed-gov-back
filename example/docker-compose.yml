@@ -3,7 +3,7 @@ version: '2'
 services:
     feedbackdb:
         image: postgres:10.1
-        restart: always
+        restart: on-failure
         volumes:
             - ./db/:/var/lib/postgresql/data
         environment:
