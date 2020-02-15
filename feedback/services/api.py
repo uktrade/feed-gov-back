@@ -3,6 +3,7 @@ from rest_framework import status
 from feedback.models import (
     FeedbackForm,
     FormElement,
+    Placement,
     FeedbackCollection,
 )
 from feedback.exceptions import InvalidElementOption
@@ -116,7 +117,7 @@ class FeedbackApi(APIView):
     Placement id can be provided in URL or as a query/form param
 
     ## GET
-        feedback/<uuid:form_id>/  Get all collections for this form
+        feedback/submit/<uuid:form_id>/  Get all collections for this form
         feedback/<uuid:form_id>/collection/<uuid:collection_id>/  Get all data for a single collection
         feedback/<uuid:form_id>/placement/<str:placement_id>/ Get all collections for a specific placment
 
@@ -151,3 +152,22 @@ class FeedbackApi(APIView):
         return ResponseSuccess({
             'result': collection.to_dict()
         }, http_status=status.HTTP_201_CREATED)
+
+
+class PlacementApi(APIView):
+    """
+    Return one or all placements available
+    """
+    def get(self, request, placement_id=None):
+        if placement_id:
+            placement = Placement.objects.get(id=placement_id)
+            return ResponseSuccess({
+                'result': placement.to_dict()
+            })
+        else:
+            placements = Placement.objects.all().order_by('name')
+            return ResponseSuccess({
+                'results': [
+                    placement.to_dict() for placement in placements
+                ]
+            })
