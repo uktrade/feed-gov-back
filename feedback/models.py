@@ -1,9 +1,9 @@
-from django.db import models
-from django.contrib.postgres import fields
 from django.conf import settings
+from django.contrib.postgres import fields
+from django.db import models
+
 from .base import BaseFeedbackModel
 from .exceptions import InvalidElementOption
-
 
 USER_MODEL_PATH = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 DEFAULT_PLACEMENT_KEY = getattr(settings, 'DEFAULT_PLACEMENT_KEY', 'DEFAULT')
@@ -161,7 +161,7 @@ class ElementType(models.Model):
     """
     name = models.CharField(max_length=250, null=False, blank=False)
     key = models.CharField(max_length=30, null=False, blank=False)
-    options = fields.JSONField(default=dict)
+    options = models.JSONField(default=dict)
 
     class Meta:
         managed = MANAGED_MODELS
@@ -189,7 +189,7 @@ class FormElement(BaseFeedbackModel):
     name = models.CharField(max_length=250, null=False, blank=False)
     label = models.CharField(max_length=1000, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    options = fields.JSONField(default=dict, blank=True)
+    options = models.JSONField(default=dict, blank=True)
     order = models.SmallIntegerField(default=0)
 
     class Meta:
@@ -320,7 +320,7 @@ class FeedbackData(BaseFeedbackModel):
     """
     collection = models.ForeignKey(FeedbackCollection, null=False, blank=False, on_delete=models.PROTECT)
     element = models.ForeignKey(FormElement, null=False, blank=False, on_delete=models.PROTECT)
-    value = fields.JSONField(null=True, blank=True)
+    value = models.JSONField(null=True, blank=True)
 
     class Meta:
         managed = MANAGED_MODELS
