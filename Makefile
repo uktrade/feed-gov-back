@@ -1,7 +1,6 @@
 SHELL := /bin/bash
 APPLICATION_NAME="Feed Gov Back"
 APPLICATION_VERSION=1.0
-VENV_PATH=~/Envs/feed-gov/bin
 
 # Colour coding for output
 COLOUR_NONE=\033[0m
@@ -16,7 +15,7 @@ help:
 		@echo -e "$(COLOUR_YELLOW)make sdist$(COLOUR_NONE) : Rebuild the last version"
 
 test:
-		$(VENV_PATH)/python ./runtests.py feedbackdb uktrade uktrade
+		python ./runtests.py feedbackdb uktrade uktrade
 
 sdist:
 		rm dist/*.tar.gz;
